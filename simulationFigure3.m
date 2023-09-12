@@ -50,7 +50,7 @@ K = 4; %Number of users
 %takes hours or days, while it only takes a few minutes when only the
 %heuristic beamforming schemes are computed. This shows clearly the need
 %for simple heuristic beamforming!
-computeOptimalBeamforming = true;
+computeOptimalBeamforming = false;
 
 %Number of realizations in the Monte Carlo simulations
 nbrOfMonteCarloRealizations = 2; %100;
@@ -103,7 +103,9 @@ for n = 1:length(Nantennas)
     N = Nantennas(n);
     
     %Pre-generation of Rayleigh fading channel realizations (unit variance)
-    Hall = (randn(K,N,nbrOfMonteCarloRealizations)+1i*randn(K,N,nbrOfMonteCarloRealizations))/sqrt(2);
+    
+    Hall = functionHk(K,N,nbrOfMonteCarloRealizations);
+    %Hall = (randn(K,N,nbrOfMonteCarloRealizations)+1i*randn(K,N,nbrOfMonteCarloRealizations))/sqrt(2);
     
     %Go through all channel realizations
     for m = 1:nbrOfMonteCarloRealizations
