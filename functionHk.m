@@ -1,4 +1,4 @@
-function Hk = functionHk(K,N,nbrOfMonteCarloRealizations)
+function Hk = functionHk(d,K,N,nbrOfMonteCarloRealizations)
 % Generates Rayleigh-determined ray traced channel model for use with
 % multi-user downlink beamforming
 % returns a K-by-N-by-nbrMonteCarlo complex double
@@ -6,7 +6,7 @@ function Hk = functionHk(K,N,nbrOfMonteCarloRealizations)
 % 0-axis
     UserBound = 10; % meters
     UserCoords = UserBound*rand(2,K) - repmat([5;0],1,K); % zero-center the x portion
-    d = 0.05; % meters, should be a function of lambda
+    %d = 0.05; % meters, should be a function of lambda
     fc = 5e3; %hz
     propSpeed = 343;
     lambda = propSpeed/fc;
@@ -37,6 +37,6 @@ function Hk = functionHk(K,N,nbrOfMonteCarloRealizations)
     Hk = zeros(K,N,nbrOfMonteCarloRealizations);
     Hk(:,:,1) = sum(PathGain.*exp(-1i*2*pi*fc.*PathDelay),3);
     Hk(:,:,2) = Hk(:,:,1);
-    Hk = Hk*1e-7;
+    Hk = Hk/max(mean(Hk(:,:,1),1));
     %Hk = (randn(K,N,nbrOfMonteCarloRealizations)+1i*randn(K,N,nbrOfMonteCarloRealizations))/sqrt(2);
 end

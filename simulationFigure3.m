@@ -95,7 +95,9 @@ if computeOptimalBeamforming == true
     sumrateOPTIMAL = zeros(length(P_BRB),nbrOfMonteCarloRealizations,length(Nantennas));
 end
 
-
+% go through different lengths of D
+nD = linspace(0.01,0.10,10);
+for d=1:length(nD)
 %Go through the different number of transmit antennas
 for n = 1:length(Nantennas)
     
@@ -104,8 +106,8 @@ for n = 1:length(Nantennas)
     
     %Pre-generation of Rayleigh fading channel realizations (unit variance)
     
-    Hall = functionHk(K,N,nbrOfMonteCarloRealizations);
-    %Hall = (randn(K,N,nbrOfMonteCarloRealizations)+1i*randn(K,N,nbrOfMonteCarloRealizations))/sqrt(2);
+    Hall = functionHk(d,K,N,nbrOfMonteCarloRealizations);
+    Hall = (randn(K,N,nbrOfMonteCarloRealizations)+1i*randn(K,N,nbrOfMonteCarloRealizations))/sqrt(2);
     
     %Go through all channel realizations
     for m = 1:nbrOfMonteCarloRealizations
@@ -235,9 +237,15 @@ for n = 1:length(Nantennas)
         end
         
     end
-    
-end
 
+temp = mean(sumRateMMSE(:,:,n),2);
+dsumRateMMSE(d,n) = mean(temp);
+temp = mean(sumRateZFBF(:,:,n),2);
+dsumRateZFBF(d,n) = mean(temp);
+temp = mean(sumRateMRT(:,:,n),2);
+dsumRateMRT(d,n) = mean(temp);
+end
+end
 
 
 
@@ -250,9 +258,9 @@ if computeOptimalBeamforming==true
     plot(PdB_BRB,mean(sumrateOPTIMAL(:,:,n),2),'k:','LineWidth',1);
 end
 
-plot(PdB,mean(sumRateMMSE(:,:,n),2),'r','LineWidth',1);
-plot(PdB,mean(sumRateZFBF(:,:,n),2),'b--','LineWidth',1);
-plot(PdB,mean(sumRateMRT(:,:,n),2),'k-.','LineWidth',1);
+plot(nD,dsumRateMMSE(:,n),'r','LineWidth',1);
+plot(nD,dsumRateZFBF(:,n),'b--','LineWidth',1);
+plot(nD,dsumRateMRT(:,n),'k-.','LineWidth',1);
 
 if computeOptimalBeamforming == true
     legend('Optimal Beamforming','Transmit MMSE/Regul. ZFBF','ZFBF','MRT','Location','NorthWest');
@@ -262,7 +270,7 @@ end
 
 title(['N = ' num2str(Nantennas(n)) ' antennas']);
 
-xlabel('Average SNR [dB]')
+xlabel('Element Spacing (m)')
 ylabel('Average Sum Rate [bit/channel use]');
 
 end

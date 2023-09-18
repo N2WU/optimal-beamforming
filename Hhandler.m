@@ -1,12 +1,13 @@
-clear all; close all;
+close all; clear all;
 K = 4; % users
 N = 12; % number of antennas
 nbrOfMonteCarloRealizations = 2; % assuming it influences size
+d = 0.05;
 
 % K-by-N-by-nMCR
 Hk = (randn(K,N,nbrOfMonteCarloRealizations)+1i*randn(K,N,nbrOfMonteCarloRealizations))/sqrt(2);
 
-Hall = functionHk(K,N,nbrOfMonteCarloRealizations);
+Hall = functionHk(d,K,N,nbrOfMonteCarloRealizations);
 
 %{
 r4 = openfig("N_4_Random.fig");
@@ -26,7 +27,7 @@ openfig('N_12_DelayReflect.fig','reuse');
 ax4 = gca;
 %close all;
 
-figure(5);
+figure(500);
 tcl=tiledlayout(2,2);
 ax1.Parent=tcl;
 ax1.Layout.Tile=1;
